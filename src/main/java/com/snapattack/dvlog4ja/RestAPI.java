@@ -15,14 +15,14 @@ public class RestAPI {
     
     private static final Logger logger = LogManager.getLogger();
     
-   @GET
+  @GET
     @Path("/user")
     public Response user(@HeaderParam("user-agent") String userAgent){
         // Sanitize the user agent string to remove any potential log entry injection
         String sanitizedUserAgent = sanitizeUserAgent(userAgent);
         logger.info("User Agent: " + sanitizedUserAgent);
         return Response
-                .ok("User Agent: " + sanitizedUserAgent + "\n")
+                .ok(String.format("User Agent: %s\n", sanitizedUserAgent))
                 .build();
     }
 
