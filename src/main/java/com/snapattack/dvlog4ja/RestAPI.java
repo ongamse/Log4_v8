@@ -19,12 +19,28 @@ public class RestAPI {
     @Path("/user")
     public Response user(@HeaderParam("user-agent") String userAgent){
         // Sanitize the user agent string to remove any potential log entry injection
-        String sanitizedUserAgent = userAgent.replace("\n", "").replace("\r", "");
+        String sanitizedUserAgent = sanitizeUserAgent(userAgent);
         logger.info("User Agent: " + sanitizedUserAgent);
         return Response
                 .ok("User Agent: " + sanitizedUserAgent + "\n")
                 .build();
     }
+
+private String sanitizeUserAgent(String userAgent) {
+    StringBuilder sanitized = new StringBuilder();
+    for (char c : userAgent.toCharArray()) {
+        if (isSafeCharacter(c)) {
+            sanitized.append(c);
+        }
+    }
+    return sanitized.toString();
+}
+
+private boolean isSafeCharacter(char c) {
+    // Implement your own logic to determine if the character is safe
+    // For example, you might only allow alphanumeric characters and spaces
+    return Character.isAlphabetic(c) || Character.isDigit(c) || Character.isSpaceChar(c);
+}
     
     @GET
     @Path("/get")
