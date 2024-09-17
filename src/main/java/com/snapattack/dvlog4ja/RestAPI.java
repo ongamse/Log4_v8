@@ -14,6 +14,10 @@ import org.apache.logging.log4j.Logger;
 public class RestAPI {
     
     private static final Logger logger = LogManager.getLogger();
+
+    public void logUserInput(String userInput) {
+        logger.info("User input: " + userInput);
+}
     
 @GET
     @Path("/user")
