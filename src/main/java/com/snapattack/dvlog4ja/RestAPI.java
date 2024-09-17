@@ -15,8 +15,10 @@ public class RestAPI {
     
     private static final Logger logger = LogManager.getLogger();
 
-    public void logUserInput(String userInput) {
-        logger.info("User input: " + userInput);
+     public void logUserInput(String userInput) {
+        // Escape user input to prevent log forging attacks
+        String escapedInput = StringEscapeUtils.escapeJava(userInput);
+        logger.info("User input: " + escapedInput);
 }
     
 @GET
