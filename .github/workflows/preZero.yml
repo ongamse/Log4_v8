@@ -1,0 +1,39 @@
+# This workflow integrates Qwiet preZero with GitHub
+# Visit https://docs.shiftleft.io for help
+name: Qwiet
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    # We recommend triggering a scan when merging to your default branch
+    # as a best practice, especially if you'd like to compare the results
+    # of two scans (e.g., a feature branch against the default branch)
+    branches:
+      - main
+      - master
+jobs:
+  ngsast-build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download the Qwiet CLI and set permissions
+      run: |
+        curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
+
+    # Qwiet requires Java
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 11
+
+    - name: Package with Maven
+      run: mvn clean package 
+
+    - name: NextGen Static Analysis
+      run: ${GITHUB_WORKSPACE}/sl analyze --app QwietAI-AutoFix4log --tag branch=${{ github.head_ref || steps.extract_branch.outputs.branch }} --vcs-prefix-correction "io/shiftleft=src/main/java/" --javasrc .
+
+      env:
+        SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
