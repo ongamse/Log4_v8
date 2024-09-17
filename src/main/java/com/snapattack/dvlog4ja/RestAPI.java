@@ -7,6 +7,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,12 @@ import org.apache.logging.log4j.Logger;
 public class RestAPI {
     
     private static final Logger logger = LogManager.getLogger();
+
+    public void logUserInput(String userInput) {
+        // Escape user input to prevent log forging attacks
+        String escapedInput = StringEscapeUtils.escapeJava(userInput);
+        logger.info("User input: " + escapedInput);
+    }
     
     @GET
     @Path("/user")
